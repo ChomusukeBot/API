@@ -52,6 +52,6 @@ async def github(request):
     redirect = AUTH_GITHUB.format(os.environ["GITHUB_CLIENT"], callback)
     # Create a 301 with the correct URL
     response = sanic.response.redirect(redirect, status=301)
-    response.cookies["id"] = str(request.args["id"])
+    response.cookies["id"] = request.args["id"][0]
     # And return it
     return response
