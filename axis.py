@@ -4,6 +4,9 @@ import sanic
 
 from tools import parse_url
 
+# The authentication redirection URLs
+AUTH_GITHUB = "https://github.com/login/oauth/authorize?client_id={0}&redirect_uri={1}"  # noqa: E501
+
 
 # Create the basic Sanic application
 APP = sanic.Sanic()
@@ -33,6 +36,8 @@ async def github(request):
         return sanic.response.text("The Discord ID was not specified",
                                    status=400)
 
-    # Otherwise, return a 301 with the correct URL
-    return sanic.response.redirect(parse_url(request.url) + "/github/callback",
-                                   status=301)
+    # Format the URL that we are going to redirect to
+    redirect = "{0}/github/callback".format(parse_url(request.url))
+    url = AUTH_GITHUB.format(os.environ["GITHUB_CLIENT"], redirect)
+    # And return a 301 with the correct URL
+    return sanic.response.redirect(url, status=301)
