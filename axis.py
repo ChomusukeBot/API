@@ -1,3 +1,4 @@
+import aiohttp
 import os
 import sanic
 from dotenv import load_dotenv
@@ -13,6 +14,8 @@ del load_dotenv
 
 # Create the basic Sanic application
 APP = sanic.Sanic()
+# Create the aiohttp Client for making web requests
+CLIENT = aiohttp.ClientSession()
 # If there is a MongoDB URL on the env. variables
 if "MONGO_URL" not in os.environ:
     # Create the instance and make sure that is valid
