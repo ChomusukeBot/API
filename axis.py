@@ -1,6 +1,7 @@
 import aiohttp
 import os
 import sanic
+import sys
 from dotenv import load_dotenv
 from motor.motor_asyncio import AsyncIOMotorClient
 from tools import parse_url
@@ -17,14 +18,15 @@ del load_dotenv
 
 # Create the basic Sanic application
 APP = sanic.Sanic()
-# If there is a MongoDB URL on the env. variables
+# If there is no MongoDB URL, exit with code 2
 if "MONGO_URL" not in os.environ:
-    # Create the instance and make sure that is valid
-    MONGO = AsyncIOMotorClient(os.environ["MONGO_URL"])
-    MONGO.admin.command("ismaster")
-else:
-    # Otherwise, just set the instance to None
-    MONGO = None
+    sys.exit(2)
+
+# Create the instance and make sure that is valid
+MONGO = AsyncIOMotorClient(os.environ["MONGO_URL"])
+MONGO.admin.command("ismaster")
+DATABASE = MONGO["chomusuke"]
+COLLECTION = DATABASE["users"]
 
 
 @APP.route("/")
