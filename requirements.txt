@@ -1,3 +1,5 @@
 gunicorn==19.9.0
 sanic==19.6.2
 python-dotenv==0.10.3
+motor==2.0.0
+dnspython==1.16.0

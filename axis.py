@@ -1,6 +1,7 @@
 import os
 import sanic
 from dotenv import load_dotenv
+from motor.motor_asyncio import AsyncIOMotorClient
 from tools import parse_url
 
 # The authentication redirection URLs
@@ -12,6 +13,14 @@ del load_dotenv
 
 # Create the basic Sanic application
 APP = sanic.Sanic()
+# If there is a MongoDB URL on the env. variables
+if "MONGO_URL" not in os.environ:
+    # Create the instance and make sure that is valid
+    MONGO = AsyncIOMotorClient(os.environ["MONGO_URL"])
+    MONGO.admin.command("ismaster")
+else:
+    # Otherwise, just set the instance to None
+    MONGO = None
 
 
 @APP.route("/")
