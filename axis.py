@@ -73,6 +73,16 @@ async def github_callback(request):
         return sanic.response.text("GitHub is not supported at this time.",
                                    status=503)
 
+    # If there is no Discord ID
+    if "id" not in request.cookies:
+        return sanic.response.text("No Discord ID present on cookies.",
+                                   status=400)
+
+    # If there is a Discord ID but is not numeric
+    if not request.cookies["id"].isnumeric():
+        return sanic.response.text("The Discord ID is not numeric.",
+                                   status=400)
+
     # If there is no code returned by GitHub
     if "code" not in request.args:
         return sanic.response.text("There is no GitHub code.",
