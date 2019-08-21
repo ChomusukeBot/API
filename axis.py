@@ -79,7 +79,7 @@ async def github_callback(request):
     # Format the URL that we are going to request
     url = CODE_GITHUB.format(os.environ["GITHUB_CLIENT"],
                              os.environ["GITHUB_SECRET"],
-                             request.args["code"])
+                             request.args["code"][0])
     # Make a web request for getting the user token
     async with aiohttp.ClientSession() as client:
         async with client.get(url) as resp:
