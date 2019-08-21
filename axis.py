@@ -1,12 +1,14 @@
 import os
-
 import sanic
-
+from dotenv import load_dotenv
 from tools import parse_url
 
 # The authentication redirection URLs
 AUTH_GITHUB = "https://github.com/login/oauth/authorize?client_id={0}&redirect_uri={1}"  # noqa: E501
 
+# Load the .env and unload the lib
+load_dotenv()
+del load_dotenv
 
 # Create the basic Sanic application
 APP = sanic.Sanic()
