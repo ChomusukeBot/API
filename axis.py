@@ -112,4 +112,23 @@ async def github_callback(request):
     # If there are no errors, make another request for the real token
     async with aiohttp.ClientSession() as client:
         async with client.get(USER_GITHUB, headers=headers) as resp:
-            print(await resp.text())
+            # If the code is not 200
+            if resp.status != 200:
+                return sanic.response.text("An error has ocurred while fetching your data.",  # noqa: E501
+                                           status=resp.status)
+            # Save the response as JSON
+            json = await resp.json()
+
+    # Save the ID as a number
+    _id = int(request.cookies["id"])
+
+    # Try to look for an item
+    found = await COLLECTION.find_one({"_id": _id})
+    # If there is an item, update it
+    if found:
+        await COLLECTION.update_one({"_id": _id},
+                                    {"$set": {"github": json["login"]}})
+    # Otherwise, insert a new one
+    else:
+        await COLLECTION.insert_one({"_id": _id,
+                                    "github": json["login"]})
