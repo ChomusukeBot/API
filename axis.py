@@ -137,6 +137,11 @@ async def github_callback(request):
         await COLLECTION.insert_one({"_id": _id,
                                     "github": json["login"]})
 
+    # Tell the user that we are done
+    return sanic.response.text("Done! The GitHub account {0} is now linked with Discord.".format(json["login"]),  # noqa: E501
+                               status=200)
+
+
 if __name__ == "__main__":
     server = APP.create_server(host="0.0.0.0", port=42013,
                                return_asyncio_server=True)
