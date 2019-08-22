@@ -1,0 +1,19 @@
+{
+    "name": "Axis",
+    "description": "Axis is a REST API created for helping the Chomusuke Bot do their every day tasks.",
+    "repository": "https://github.com/ChomusukeBot/Axis",
+    "env": {
+        "MONGO_URL": {
+            "description": "The MongoDB connection URL for storing and reading the user data.",
+            "required": true
+        },
+        "GITHUB_CLIENT": {
+            "description": "GitHub Application Client ID for oauth2 logins.",
+            "required": false
+        },
+        "GITHUB_SECRET": {
+            "description": "GitHub Application Secret for oauth2 logins.",
+            "required": false
+        }
+    }
+}
