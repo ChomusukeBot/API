@@ -1,4 +1,5 @@
 import aiohttp
+import asyncio
 import os
 import sanic
 import sys
@@ -6,6 +7,9 @@ from dotenv import load_dotenv
 from motor.motor_asyncio import AsyncIOMotorClient
 from tools import parse_url
 from urllib.parse import parse_qs
+
+# Create the asyncio event loop
+LOOP = asyncio.get_event_loop()
 
 # The authentication redirection URLs
 AUTH_GITHUB = "https://github.com/login/oauth/authorize?client_id={0}&redirect_uri={1}"  # noqa: E501
@@ -23,7 +27,7 @@ if "MONGO_URL" not in os.environ:
     sys.exit(2)
 
 # Create the instance and make sure that is valid
-MONGO = AsyncIOMotorClient(os.environ["MONGO_URL"])
+MONGO = AsyncIOMotorClient(os.environ["MONGO_URL"], io_loop=LOOP)
 MONGO.admin.command("ismaster")
 DATABASE = MONGO["chomusuke"]
 COLLECTION = DATABASE["users"]
@@ -132,3 +136,9 @@ async def github_callback(request):
     else:
         await COLLECTION.insert_one({"_id": _id,
                                     "github": json["login"]})
+
+if __name__ == "__main__":
+    server = APP.create_server(host="0.0.0.0", port=42013,
+                               return_asyncio_server=True)
+    task = asyncio.ensure_future(server, loop=LOOP)
+    LOOP.run_forever()
